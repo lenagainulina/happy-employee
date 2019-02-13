@@ -19,10 +19,6 @@ public class EmployeeDto {
 
     private FullName fullName;
 
-    private String firstName;
-
-    private String lastName;
-
     private LocalDate birthday;
 
     private List<String> hobbies;

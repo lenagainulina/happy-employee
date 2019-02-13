@@ -162,8 +162,7 @@ public class EmployeeControllerWebMvcTest {
         EmployeeDto employee = new EmployeeDto();
         List<String> hobbies = mockHobbyList();
         employee.setEMail("aoneko3@gmx.de");
-        employee.setFirstName(null);
-        employee.setLastName("???");
+        employee.setFullName(mockFullName(null,"???"));
         employee.setBirthday(LocalDate.of(1986, 4, 24));
         employee.setHobbies(hobbies);
         return employee;
@@ -173,8 +172,7 @@ public class EmployeeControllerWebMvcTest {
         EmployeeDto employee = new EmployeeDto();
         List<String> hobbies = mockHobbyList();
         employee.setEMail("aoneko2@gmx.de");
-        employee.setFirstName("Lena");
-        employee.setLastName("Gainulina");
+        employee.setFullName(mockFullName("Lena","Gainulina"));
         employee.setBirthday(LocalDate.of(1996, 4, 24));
         employee.setHobbies(hobbies);
         return employee;
@@ -184,7 +182,7 @@ public class EmployeeControllerWebMvcTest {
         Employee employee = new Employee();
         employee.setId(UUID.randomUUID().toString());
         employee.setEMail(mockEmployeeUpdateDto().getEMail());
-        employee.setFullName(new FullName(mockEmployeeUpdateDto().getFirstName(), mockEmployeeUpdateDto().getLastName()));
+        employee.setFullName(mockFullName("Lena","Gainulina"));
         employee.setBirthday(mockEmployeeUpdateDto().getBirthday());
         employee.setHobbies(mockEmployeeUpdateDto().getHobbies());
         return employee;
@@ -194,7 +192,7 @@ public class EmployeeControllerWebMvcTest {
         Employee employee = new Employee();
         employee.setId(UUID.randomUUID().toString());
         employee.setEMail(mockEmployeeNew().getEMail());
-        employee.setFullName(new FullName(mockEmployeeNew().getFirstName(), mockEmployeeNew().getLastName()));
+        employee.setFullName(mockFullName(null,"???"));
         employee.setBirthday(mockEmployeeNew().getBirthday());
         employee.setHobbies(mockHobbyList());
         return employee;
@@ -205,5 +203,12 @@ public class EmployeeControllerWebMvcTest {
         hobbyList.add("yoga");
         hobbyList.add("running");
         return hobbyList;
+    }
+
+    private FullName mockFullName(String firstName, String lastName){
+        FullName fullName = new FullName();
+        fullName.setFirstName(firstName);
+        fullName.setLastName(lastName);
+        return fullName;
     }
 }

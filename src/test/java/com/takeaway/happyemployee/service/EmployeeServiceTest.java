@@ -71,8 +71,6 @@ public class EmployeeServiceTest {
         assertEquals(newEmployee.getBirthday(), savedEmployee.getBirthday());
         assertEquals(newEmployee.getHobbies(), newEmployee.getHobbies());
         assertEquals(newEmployee.getFullName(), savedEmployee.getFullName());
-        assertEquals(newEmployee.getFirstName(), savedEmployee.getFullName().getFirstName());
-        assertEquals(newEmployee.getLastName(), savedEmployee.getFullName().getLastName());
     }
 
     @Test
@@ -107,7 +105,7 @@ public class EmployeeServiceTest {
         assertEquals(updatedEmployee.getHobbies(), savedUpdatedEmployee.getHobbies());
         assertEquals(fullNameAfterUpdate, savedUpdatedEmployee.getFullName());
         assertEquals(fullNameAfterUpdate.getFirstName(), savedUpdatedEmployee.getFullName().getFirstName());
-        assertEquals(updatedEmployee.getLastName(),savedUpdatedEmployee.getFullName().getLastName());
+        assertEquals(fullNameAfterUpdate.getLastName(),savedUpdatedEmployee.getFullName().getLastName());
     }
 
     @Test
@@ -192,8 +190,6 @@ public class EmployeeServiceTest {
         EmployeeDto employee = new EmployeeDto();
         employee.setEMail("aoneko@gmx.de");
         employee.setFullName(mockFullName("Lena", "Gainulina"));
-        employee.setFirstName(mockFullName("Lena", "Gainulina").getFirstName());
-        employee.setLastName(mockFullName("Lena", "Gainulina").getLastName());
         employee.setBirthday(LocalDate.of(1996,4,24));
         employee.setHobbies(mockHobbyList());
         return employee;
@@ -203,8 +199,6 @@ public class EmployeeServiceTest {
         EmployeeDto employee = new EmployeeDto();
         employee.setEMail(null);
         employee.setFullName(null);
-        employee.setFirstName(null);
-        employee.setLastName(null);
         employee.setBirthday(null);
         employee.setHobbies(null);
         return employee;
@@ -214,8 +208,6 @@ public class EmployeeServiceTest {
         EmployeeDto employee = new EmployeeDto();
         employee.setEMail("aoneko2@gmx.de");
         employee.setFullName(mockFullName("", "???"));
-        employee.setFirstName(mockFullName("", "???").getFirstName());
-        employee.setLastName(mockFullName("", "???").getLastName());
         employee.setBirthday(LocalDate.of(1986,4,24));
         employee.setHobbies(mockHobbyList());
         return employee;
@@ -225,8 +217,6 @@ public class EmployeeServiceTest {
         EmployeeDto employee = new EmployeeDto();
         employee.setEMail("aoneko3@gmx.de");
         employee.setFullName(null);
-        employee.setFirstName(null);
-        employee.setLastName(null);
         employee.setBirthday(LocalDate.of(1986,4,24));
         employee.setHobbies(mockHobbyList());
         return employee;

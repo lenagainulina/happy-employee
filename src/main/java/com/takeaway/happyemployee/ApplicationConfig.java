@@ -8,4 +8,5 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @EntityScan(basePackageClasses = {HappyEmployeeApplication.class})
 @EnableJpaAuditing
 public class ApplicationConfig  {
+
 }
