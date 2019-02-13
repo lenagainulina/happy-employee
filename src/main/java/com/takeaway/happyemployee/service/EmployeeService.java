@@ -8,13 +8,14 @@ import com.takeaway.happyemployee.repository.EmployeeRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class EmployeeService {
 
     private EmployeeRepository employeeRepo;
 
-    public EmployeeService(EmployeeRepository employeeRepo) {
+    EmployeeService(EmployeeRepository employeeRepo) {
         this.employeeRepo = employeeRepo;
     }
 
@@ -72,6 +73,11 @@ public class EmployeeService {
     }
 
     public void deleteEmployeeById(String id) {
+        Optional<Employee> employee = employeeRepo.findById(id);
+        if(!employee.isPresent()) {
+            throw new ResourceNotFoundException("Not found", "employee", id);
+        }
+
         employeeRepo.deleteById(id);
     }
 }

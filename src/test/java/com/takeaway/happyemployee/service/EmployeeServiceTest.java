@@ -167,9 +167,15 @@ public class EmployeeServiceTest {
     }
 
     @Test(expected = ResourceNotFoundException.class)
-    public void deleteEmployee(){
+    public void deleteEmployee_success(){
         employeeService.deleteEmployeeById(savedEmployee.getId());
         Employee deletedEmployee=employeeService.retrieveEmployeeById(savedEmployee.getId());
+    }
+
+    @Test(expected = ResourceNotFoundException.class)
+    public void deleteEmployee_notFound(){
+        String id = "1234UUID";
+        employeeService.deleteEmployeeById(id);
     }
 
     private Employee mockEmployee(){
