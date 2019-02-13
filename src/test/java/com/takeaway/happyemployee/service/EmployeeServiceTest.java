@@ -27,11 +27,11 @@ import static org.junit.Assert.*;
 @SuppressWarnings("unused")
 @RunWith(SpringRunner.class)
 @DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.AUTO_CONFIGURED)
 public class EmployeeServiceTest {
     @TestConfiguration
     @EnableJpaAuditing
-    public static class OrderServiceTestConfiguration {
+    public static class EmployeeServiceTestConfiguration {
         @Autowired
         private EmployeeRepository employeeRepo;
 
@@ -73,7 +73,7 @@ public class EmployeeServiceTest {
         assertEquals(newEmployee.getFullName(), savedEmployee.getFullName());
     }
 
-    @Test
+    @Test //checks if the completely empty employee profile can be saved
     public void saveEmptyNewEmployee(){
         Employee savedEmptyEmployee = employeeService.saveEmployee(emptyNewEmployee);
 
@@ -92,10 +92,6 @@ public class EmployeeServiceTest {
 
     @Test
     public void saveFullyUpdatedEmployee(){
-        FullName fullNameAfterUpdate= new FullName();
-        fullNameAfterUpdate.setFirstName("");
-        fullNameAfterUpdate.setLastName("???");
-
         Employee savedUpdatedEmployee = employeeService.saveUpdatedEmployee(savedEmployee.getId(), updatedEmployee);
 
         assertNotNull(savedUpdatedEmployee);
@@ -103,17 +99,13 @@ public class EmployeeServiceTest {
         assertEquals(updatedEmployee.getEMail(), savedUpdatedEmployee.getEMail());
         assertEquals(updatedEmployee.getBirthday(), savedUpdatedEmployee.getBirthday());
         assertEquals(updatedEmployee.getHobbies(), savedUpdatedEmployee.getHobbies());
-        assertEquals(fullNameAfterUpdate, savedUpdatedEmployee.getFullName());
-        assertEquals(fullNameAfterUpdate.getFirstName(), savedUpdatedEmployee.getFullName().getFirstName());
-        assertEquals(fullNameAfterUpdate.getLastName(),savedUpdatedEmployee.getFullName().getLastName());
+        assertEquals(updatedEmployee.getFullName(), savedUpdatedEmployee.getFullName());
+        assertEquals(updatedEmployee.getFullName().getFirstName(), savedUpdatedEmployee.getFullName().getFirstName());
+        assertEquals(updatedEmployee.getFullName().getLastName(),savedUpdatedEmployee.getFullName().getLastName());
     }
 
-    @Test
+    @Test //check that null fields are not updated
     public void savePartiallyUpdatedEmployee(){
-        FullName fullNameAfterUpdate = new FullName();
-        fullNameAfterUpdate.setFirstName("Lena");
-        fullNameAfterUpdate.setLastName("Gainulina");
-
         Employee savedUpdatedEmployee = employeeService.saveUpdatedEmployee(savedEmployee.getId(), partiallyUpdatedEmployee);
 
         assertNotNull(savedUpdatedEmployee);
@@ -121,9 +113,10 @@ public class EmployeeServiceTest {
         assertEquals(partiallyUpdatedEmployee.getEMail(), savedUpdatedEmployee.getEMail());
         assertEquals(partiallyUpdatedEmployee.getBirthday(), savedUpdatedEmployee.getBirthday());
         assertEquals(partiallyUpdatedEmployee.getHobbies(), savedUpdatedEmployee.getHobbies());
-        assertEquals(fullNameAfterUpdate, savedUpdatedEmployee.getFullName());
-        assertEquals(fullNameAfterUpdate.getFirstName(), savedUpdatedEmployee.getFullName().getFirstName());
-        assertEquals(fullNameAfterUpdate.getLastName(),savedUpdatedEmployee.getFullName().getLastName());
+        // following fields must not be updated
+        assertEquals(savedEmployee.getFullName(), savedUpdatedEmployee.getFullName());
+        assertEquals(savedEmployee.getFullName().getFirstName(), savedUpdatedEmployee.getFullName().getFirstName());
+        assertEquals(savedEmployee.getFullName().getLastName(),savedUpdatedEmployee.getFullName().getLastName());
     }
 
     @Test(expected = EntityNotUniqueException.class)
@@ -159,21 +152,38 @@ public class EmployeeServiceTest {
     }
 
     @Test(expected = ResourceNotFoundException.class)
-    public void retrieceEmployeeById(){
+    public void retrieveEmployeeById_notFound(){
         String id = "1234UUID";
         employeeService.retrieveEmployeeById(id);
     }
 
-    @Test(expected = ResourceNotFoundException.class)
+    @Test
     public void deleteEmployee_success(){
+        int before = employeeService.findAllEmployees().size();
         employeeService.deleteEmployeeById(savedEmployee.getId());
-        Employee deletedEmployee=employeeService.retrieveEmployeeById(savedEmployee.getId());
+
+        int after = employeeService.findAllEmployees().size();
+
+        assertEquals((before - 1), after);
     }
 
     @Test(expected = ResourceNotFoundException.class)
     public void deleteEmployee_notFound(){
         String id = "1234UUID";
         employeeService.deleteEmployeeById(id);
+    }
+
+    @Test
+    public void saveFullName_concatFirstAndLastName(){
+        FullName fullNameAfterUpdate = new FullName();
+        fullNameAfterUpdate.setFirstName("Lena");
+        fullNameAfterUpdate.setLastName("Gainulina");
+
+        Employee savedUpdatedEmployee = employeeService.saveUpdatedEmployee(savedEmployee.getId(), partiallyUpdatedEmployee);
+
+        assertEquals(fullNameAfterUpdate, savedUpdatedEmployee.getFullName());
+        assertEquals(fullNameAfterUpdate.getFirstName(), savedUpdatedEmployee.getFullName().getFirstName());
+        assertEquals(fullNameAfterUpdate.getLastName(),savedUpdatedEmployee.getFullName().getLastName());
     }
 
     private Employee mockEmployee(){

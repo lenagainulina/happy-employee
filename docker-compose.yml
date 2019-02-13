@@ -1,0 +1,27 @@
+version: '3.3'
+services:
+  db:
+    container_name: db
+    image: mysql:latest
+    volumes:
+    - /data/mysql
+    environment:
+    - MYSQL_ROOT_PASSWORD=r00t
+    - MYSQL_USER=root
+    - MYSQL_DATABASE=employee
+    - MYSQL_PASSWORD=r00t
+    restart: unless-stopped
+    ports:
+    - "3306:3306"
+  api:
+    container_name: app_employee
+    build: .
+    ports:
+    - "8080:8080"
+    environment:
+    - API_DB_HOST=dbase:3306
+    - API_DB_ROOT_PASSWORD=r00t
+    - API_DB_USER=root
+    restart: unless-stopped
+    depends_on:
+    - db
