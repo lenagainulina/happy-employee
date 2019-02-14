@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3'
 services:
   db:
     container_name: db
@@ -10,7 +10,7 @@ services:
     - MYSQL_USER=root
     - MYSQL_DATABASE=employee
     - MYSQL_PASSWORD=r00t
-    restart: unless-stopped
+    restart: always
     ports:
     - "3306:3306"
   api:
@@ -19,9 +19,7 @@ services:
     ports:
     - "8080:8080"
     environment:
-    - API_DB_HOST=dbase:3306
-    - API_DB_ROOT_PASSWORD=r00t
-    - API_DB_USER=root
-    restart: unless-stopped
+    - WAIT_HOSTS=db:3306
+    restart: always
     depends_on:
     - db
